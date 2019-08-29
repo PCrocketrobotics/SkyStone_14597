@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import android.content.Context;
 
 import com.qualcomm.ftccommon.SoundPlayer;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -50,7 +49,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //
 
 @TeleOp(name="SKYSTONE Sounds", group="Concept")
-@Disabled
+
 public class ConceptSoundsSKYSTONE extends LinearOpMode {
 
     // List of available sound resources
