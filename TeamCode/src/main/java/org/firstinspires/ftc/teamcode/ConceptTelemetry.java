@@ -55,31 +55,7 @@ public class ConceptTelemetry extends LinearOpMode  {
 
     /** keeps track of how long it's been since we last emitted a line of poetry */
     ElapsedTime poemElapsed = new ElapsedTime();
-
-    static final String[] poem = new String[] {
-
-        "Mary had a little lamb,",
-        "His fleece was white as snow,",
-        "And everywhere that Mary went,",
-        "The lamb was sure to go.",
-        "",
-        "He followed her to school one day,",
-        "Which was against the rule,",
-        "It made the children laugh and play",
-        "To see a lamb at school.",
-        "",
-        "And so the teacher turned it out,",
-        "But still it lingered near,",
-        "And waited patiently about,",
-        "Till Mary did appear.",
-        "",
-        "\"Why does the lamb love Mary so?\"",
-        "The eager children cry.",
-        "\"Why, Mary loves the lamb, you know,\"",
-        "The teacher did reply.",
-        "",
-        ""
-    };
+    
 
     @Override public void runOpMode() {
 
@@ -124,20 +100,26 @@ public class ConceptTelemetry extends LinearOpMode  {
 
         // Reset to keep some timing stats for the post-'start' part of the opmode
         opmodeRunTime.reset();
-        int loopCount = 1;
 
         // Go go gadget robot!
         while (opModeIsActive()) {
+            double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+            double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+            double rightX = gamepad1.right_stick_x;
 
-            // Emit poetry if it's been a while
-            if (poemElapsed.seconds() > sPoemInterval) {
-                emitPoemLine();
-            }
-
+            final double V1 = r * Math.cos(robotAngle) + rightX;
+            final double V2 = r * Math.sin(robotAngle) - rightX;
+            final double V3 = r * Math.sin(robotAngle) + rightX;
+            final double V4 = r * Math.cos(robotAngle) - rightX;
+            
             // As an illustration, show some loop timing information
-            telemetry.addData("loop count", loopCount);
-            telemetry.addData("ms/loop", "%.3f ms", opmodeRunTime.milliseconds() / loopCount);
-
+            telemetry.addData("r - Hypot", r);
+            telemetry.addData("robotAngle - ATAN2", robotAngle);
+            telemetry.addData("rightX", rightX);
+            telemetry.addData("V1 - LeftFront", V1);
+            telemetry.addData("V2 - RightFron", V2);
+            telemetry.addData("V3 - LeftRear", V3);
+            telemetry.addData("V4 - RightRear", V4);
             // Show joystick information as some other illustrative data
             telemetry.addLine("left joystick | ")
                     .addData("x", gamepad1.left_stick_x)
@@ -153,16 +135,9 @@ public class ConceptTelemetry extends LinearOpMode  {
             telemetry.update();
 
             /** Update loop info and play nice with the rest of the {@link Thread}s in the system */
-            loopCount++;
         }
     }
-
-    // emits a line of poetry to the telemetry log
-    void emitPoemLine() {
-        telemetry.log().add(poem[poemLine]);
-        poemLine = (poemLine+1) % poem.length;
-        poemElapsed.reset();
-    }
+    
 
     // Computes the current battery voltage
     double getBatteryVoltage() {
